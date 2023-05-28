@@ -1,0 +1,32 @@
+<div>
+    <h1>Hola {{user.first_name}} {{user.last_name}}! Bienvenido a FAG - Tienda Futbolera!</h1>
+    {{#if user}}
+        <h3 class="user">Email: {{user.email}}</h3>
+        <h3 class="user">Tipo de Usuario: {{user.role}}</h3>
+    {{/if}}
+    <div class="product-cards">
+        {{#each products}}
+            <div class="card">
+                <img src="{{this.thumbnail}}" alt=""/>
+                <strong>Id</strong>{{this._id}}
+                <strong>Nombre</strong>{{this.title}}
+                <strong>Descripcion</strong>{{this.description}}
+                <strong>Code</strong>{{this.code}}
+                <strong>Categoria</strong>{{this.category}}
+                <strong>Stock</strong>{{this.stock}}
+                <strong>Status</strong>{{this.status}}
+                <strong>Precio</strong>{{this.price}}
+                <button>Agregar al carrito</button>
+
+            </div>
+        {{/each}}
+    </div>
+    <center>
+        {{#if hasPrevPage}}
+            <a href="/products?page={{prevPage}}"><button class="boton-pagina">Anterior</button></a>
+        {{/if}}
+        {{#if hasNextPage}}
+            <a href="/products?page={{nextPage}}"><button class="boton-pagina">Siguiente</button></a>
+        {{/if}}
+    </center>
+</div>

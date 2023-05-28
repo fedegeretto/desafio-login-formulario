@@ -1,0 +1,34 @@
+<div>
+    <h1>
+        {{title}}
+    </h1>
+</div>
+<div class="container">
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <th>Nombre del Producto</th>
+            <th>Precio</th>
+            <th>Imagen</th>
+            <th>Code</th>
+            <th>Stock</th>
+            <th>Categoria</th>
+            <th>Descripción</th>
+            <th>Status</th>
+        </tr>
+        {{#each products}}
+            <tr>
+                <td>{{this._id}}</td>
+                <td>{{this.title}}</td>
+                <td>${{this.price}}</td>
+                <td><img src="{{this.thumbnail}}" alt=""/></td>
+                <td>{{this.code}}</td>
+                <td>{{this.stock}}</td>
+                <td>{{this.category}}</td>
+                <td>{{this.description}}</td>
+                <td>{{this.status}}</td>
+            </tr>
+        {{/each}}
+    </table>
+</div>
+<script src="/static/js/main.js"></script>
