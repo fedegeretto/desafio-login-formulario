@@ -98,6 +98,15 @@ router.get('/register', loged, async (req, res) => {
     res.render('registerForm', object)
 })
 
+router.get('/recoveryPassword', loged, async (req, res) => {
+    const object = {
+        style: 'index.css',
+        title: 'Recovery Password',
+        //products: payload,
+    }
+    res.render('recoveryPassword', object);
+})
+
 router.get('/profile', notLoged, async (req, res) => {
     const object = {
         style: 'index.css',

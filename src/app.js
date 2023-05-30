@@ -11,6 +11,9 @@ const messageManager = require('./dao/mongo/messsage.mongo')
 const FileStore = require('session-file-store')
 const { create } = require('connect-mongo')
 
+const { initPassport } = require('./config/passport.config.js')
+const passport = require('passport')
+
 //const { ProductManager } = require('./dao/fileSystem/productManager')
 //const path = './src/archivos/products.json'
 //const manager = new ProductManager(path)
@@ -18,6 +21,7 @@ const { create } = require('connect-mongo')
 const app = express()
 
 const handlebars = require('express-handlebars')
+
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
@@ -45,6 +49,10 @@ app.use(
 )
 
 app.use(routerApp)
+
+initPassport()
+passport.use(passport.initialize())
+passport.use(passport.session())
 
 app.use((err, req, res, next) => {
     console.log(err)
