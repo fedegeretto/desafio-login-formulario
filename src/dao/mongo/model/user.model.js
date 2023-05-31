@@ -20,6 +20,9 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    role: {
+        type: String
+    }
 })
 
 const userModel = model(collection, userSchema)

@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const { auth } = require('../middlewares/authentication.middleware')
 const userManager = require('../dao/mongo/user.mongo.js')
-
+const { createHash } = require('../utils/bcryptHash')
 const router = Router()
 
 // ------------>>>>>> GET <<<<<<------------
@@ -37,31 +37,30 @@ router.post('/', async (req, res) => {
 })
 
 // ------------>>>>>> PUT <<<<<<------------
-router.put('/:uid', async (req, res) => {
+router.put('/', async (req, res) => {
     try {
-        const { uid } = req.params
-        const user = req.body
+        //const { email } = req.params;
+        const user = req.body;
 
         let userToReplace = {
             firstName: user.nombre,
             lastName: user.apellido,
             email: user.email,
-            dateOfBirth: user.dateOfBirth,
-            password: user.password,
-        }
+            password: user.password ? createHash(user.password) : undefined,
+        };
 
-        let result = await userManager.updateUser(uid, userToReplace)
+        let result = await userManager.updateUserByEmail(user.email, userToReplace);
 
         res.status(200).send({
-            status: 'success',
+            status: "success",
             payload: result,
-        })
+        });
     } catch (error) {
         res.send({
-            status: 'error',
+            status: "error",
             error: error,
-        })
-        console.log(error)
+        });
+        console.log(error);
     }
 })
 
