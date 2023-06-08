@@ -16,17 +16,29 @@ const userSchema = new Schema({
         required: true,
         unique: true,
     },
+    date_of_birth: {
+        type: Date
+    },
     password: {
         type: String,
         required: true,
     },
     role: {
-        type: String
+        type: String,
+        default: 'user'
+    },
+    cartId: {
+        type: Schema.Types.ObjectId,
+        ref: 'carts'
     }
+})
+
+userSchema.pre('findOne', function () {
+    this.populate('cartId');
 })
 
 const userModel = model(collection, userSchema)
 
 module.exports = {
-    userModel,
-};
+    userModel
+}

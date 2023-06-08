@@ -3,6 +3,7 @@ const { auth } = require('../middlewares/authentication.middleware')
 const userManager = require('../dao/mongo/user.mongo');
 const { createHash, isValidPassword } = require('../utils/bcryptHash');
 const passport = require('passport');
+const { notLoged }= require('../middlewares/notLoged.middleware')
 const router = Router()
 
 router.get('/counter', (req, res) => {
@@ -93,13 +94,16 @@ router.post(
         req.session.user = {
             first_name: req.user.first_name,
             last_name: req.user.last_name,
-            email: req.user.email
+            email: req.user.email,
+            date_of_birth: req.user.date_of_birth.toLocaleDateString("es-AR", { timeZone: "UTC" }),
+            role: req.user.role,
+            cartId: req.user.cartId
         };
-        if (req.session.user.email === "adminCoder@coder.com") {
-            req.session.user.role = "admin";
-        } else {
-            req.session.user.role = "user";
-        }
+        // if (req.session.user.email === "adminCoder@coder.com") {
+        //     req.session.user.role = "admin";
+        // } else {
+        //     req.session.user.role = "user";
+        // }
         //res.send({ status: "succes", message: "User registed" });
         res.redirect("/products");
     }
@@ -123,11 +127,11 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 
 router.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }), async (req, res) => {
     req.session.user = req.user;
-    if (req.session.user.email === "adminCoder@coder.com") {
-        req.session.user.role = "admin";
-    } else {
-        req.session.user.role = "user";
-    }
+    // if (req.session.user.email === "adminCoder@coder.com") {
+    //     req.session.user.role = "admin";
+    // } else {
+    //     req.session.user.role = "user";
+    // }
     //console.log("reqUser", req.user);
     res.redirect("/products");
 });
@@ -140,6 +144,10 @@ router.get('/logout', (req, res) => {
             res.redirect('/login')
         }
     })
+})
+
+router.get("/current", notLoged, (req, res) => {
+    res.send(req.session.user);
 })
 
 module.exports = router

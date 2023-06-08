@@ -17,5 +17,5 @@ const messagesSchema = new Schema({
 const messageModel = model(collection, messagesSchema)
 
 module.exports = {
-    messageModel,
+    messageModel
 }

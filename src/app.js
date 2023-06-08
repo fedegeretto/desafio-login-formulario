@@ -40,7 +40,7 @@ app.use(
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             },
-            ttl: 100000 * 60,
+            ttl: 86400,
         }),
         secret: 'S3CR3T0',
         resave: false,

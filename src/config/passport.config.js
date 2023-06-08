@@ -3,10 +3,11 @@ const local = require('passport-local')
 const GithubStrategy = require('passport-github2')
 const { userModel } = require('../dao/mongo/model/user.model')
 const { createHash, isValidPassword } = require('../utils/bcryptHash')
+const cartMongo = require('../dao/mongo/cart.mongo')
 require('dotenv').config()
 
 const LocalStrategy = local.Strategy
-const chorizo = GithubStrategy.Strategy;
+const chorizo = GithubStrategy.Strategy
 
 const initPassport = () => {
     //configuracion registro
@@ -18,23 +19,28 @@ const initPassport = () => {
                 usernameField: "email",
             },
             async (req, username, password, done) => {
-                const { first_name, last_name } = req.body;
+                const { first_name, last_name, date_of_birth } = req.body
                 try {
-                    let userDB = await userModel.findOne({ email: username });
+                    let userDB = await userModel.findOne({ email: username })
 
-                    if (userDB) return done(null, false);
+                    if (userDB) return done(null, false)
+
+                    let newCart = await cartMongo.addCart()
 
                     let newUser = {
                         first_name,
                         last_name,
+                        date_of_birth,
                         email: username,
-                        password: createHash(password)
-                    };
+                        password: createHash(password),
+                        cartId: newCart._id,
+                        role: req.body.admin ? 'admin' : 'user'
+                    }
 
-                    let result = await userModel.create(newUser);
-                    return done(null, result);
+                    let result = await userModel.create(newUser)
+                    return done(null, result)
                 } catch (error) {
-                    return done("Error al obtener el usuario" + error);
+                    return done("Error al obtener el usuario" + error)
                 }
             }
         )
@@ -51,7 +57,7 @@ const initPassport = () => {
         "login",
         new LocalStrategy(
             {
-                usernameField: "email", //Decido que campo usar en username
+                usernameField: "email",
             },
             async (username, password, done) => {
                 try {

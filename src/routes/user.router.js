@@ -2,19 +2,33 @@ const { Router } = require('express')
 const { auth } = require('../middlewares/authentication.middleware')
 const userManager = require('../dao/mongo/user.mongo.js')
 const { createHash } = require('../utils/bcryptHash')
+const { notLoged } = require('../middlewares/notLoged.middleware')
 const router = Router()
 
 // ------------>>>>>> GET <<<<<<------------
-router.get('/', auth, async (req, res) => {
+router.get('/', notLoged ,auth, async (req, res) => {
     try {
         let users = await userManager.getUsers()
         res.send({
             status: 'success',
-            payload: users,
+            payload: users
         })
     } catch (error) {
         console.log(error)
         res.send({ status: 'error', ERROR: error })
+    }
+})
+
+router.get('/user', notLoged, async (req, res) => {
+    try {
+        let user = await userManager.getUserByEmail(req.session.user.email)
+        res.send({
+            status: "Success",
+            payload: user,
+        });
+    } catch (error) {
+        console.log(error);
+        res.send({ status: "error", ERROR: error });
     }
 })
 
@@ -26,6 +40,7 @@ router.post('/', async (req, res) => {
             first_name: user.nombre,
             last_name: user.apellido,
             email: user.email,
+            date_of_birth: user.date_of_birth,
             password: user.password
         }
         let result = await userManager.addUser(newUser)
@@ -46,6 +61,7 @@ router.put('/', async (req, res) => {
             firstName: user.nombre,
             lastName: user.apellido,
             email: user.email,
+            date_of_birth: user.date_of_birth,
             password: user.password ? createHash(user.password) : undefined,
         };
 
